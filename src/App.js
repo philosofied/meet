@@ -5,7 +5,7 @@ import CitySearch from "./CitySearch";
 import NumberOfEvents from "./NumberOfEvents";
 import { getEvents, extractLocations } from "./api";
 import { WarningAlert } from "./Alert";
-import { OfflineAlert } from './Alert';
+import { OfflineAlert } from "./Alert";
 import "./nprogress.css";
 import {
   ScatterChart,
@@ -30,6 +30,7 @@ class App extends Component {
   componentDidMount() {
     this.mounted = true;
     getEvents().then((events) => {
+      console.log(events)
       const { numberOfEvents } = this.state;
       if (this.mounted) {
         const filteredEvents = events.slice(0, numberOfEvents);
@@ -42,18 +43,16 @@ class App extends Component {
       if (!navigator.onLine) {
         if (!navigator.onLine) {
           this.setState({
-            offlinealert: 'Cached data is being displayed.'
-          })
-        }
-        else {
+            offlinealert: "Cached data is being displayed.",
+          });
+        } else {
           this.setState({
-            warningText: ''
-          })
+            warningText: "",
+          });
         }
       }
     });
   }
-
 
   componentWillUnmount() {
     this.mounted = false;
@@ -91,8 +90,9 @@ class App extends Component {
   getData = () => {
     const { locations, events } = this.state;
     const data = locations.map((location) => {
-      const number = events.filter((event) => event.location === location)
-        .length;
+      const number = events.filter(
+        (event) => event.location === location
+      ).length;
       const city = location.split(" ").shift();
       return { city, number };
     });
@@ -103,33 +103,32 @@ class App extends Component {
     const { locations, numberOfEvents, events } = this.state;
     return (
       <div className="App">
-        <h1>Let's Meet!</h1>
-        <h4>Select your nearest city</h4>
+        <h1> Let 's Meet!</h1> <h4> Select your nearest city </h4> 
         <div className="offline-alert">
-          <WarningAlert text={this.state.infoText} />
-        </div>
+          <WarningAlert text={this.state.infoText} /> 
+        </div> 
         <CitySearch
           updateEvents={this.updateEvents}
           locations={this.state.locations}
-        />
+        /> 
         <NumberOfEvents
           updateEvents={this.updateEvents}
           numberOfEvents={this.state.numberOfEvents}
-        />
-        <h4>Events in each city</h4>
+        /> 
+        <h4> Events in each city </h4> 
         <div className="data-vis-wrapper">
-        <ResponsiveContainer>
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <ResponsiveContainer height= {500} style={{height : "100px"}}> 
+            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }} height="300">
               <CartesianGrid />
               <XAxis type="category" dataKey="city" name="city" />
               <YAxis type="number" dataKey="number" name="number of events" />
-              <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+              <Tooltip cursor={{ strokeDasharray: "3 3" }} /> 
               <Scatter data={this.getData()} fill="#530d78" />
-            </ScatterChart>
+            </ScatterChart> 
           </ResponsiveContainer> 
-        </div>
-        <OfflineAlert text={this.state.offlinealert} />
-        <EventList events={this.state.events} />
+        </div> 
+        <OfflineAlert text={this.state.offlinealert} /> 
+        <EventList events={this.state.events} /> 
       </div>
     );
   }
